@@ -7,6 +7,7 @@
 
 using namespace std; // Utiliser le nom standard du fonction
 
+/* Constructeur de la class */
 Game::Game()
 {
     gridInit();       // initialiser le jeux
@@ -14,46 +15,49 @@ Game::Game()
     gameOver = false; // le jeux est en cours d'éxécution
 }
 
+/* Ititialiser la grille du jeu */
 void Game::gridInit()
 { // Réinitialiser les valeurs du grille
     char c = '1';
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)         // itérer les lignes
     {
-        for (int j = 0; j < 3; j++)
+        for (int j = 0; j < 3; j++)     // itérer les colonnes
         {
             grid[i][j] = c;
-            c++; // Incrémenter le caractère
+            c++;                        // Incrémenter le caractère
         }
     }
 }
 
+/* // Afficher la grille */
 void Game::displayGrid()
-{ // Afficher la grille
+{ 
     cout << "\n";
     for (int i = 0; i < 3; i++)
     {
         cout << "\t";
         for (int j = 0; j < 3; j++)
         {
-            cout << grid[i][j]; // Afficher le contenu de la grille
+            cout << grid[i][j];                 // Afficher le contenu de la grille
             if (j < 2)
-                cout << "   |   "; // Ajouter de l'espace entre chaque numéros de position
+                cout << "   |   ";              // Ajouter de l'espace entre chaque numéros de position
         }
         if (i < 2)
-            cout << "\n\t-----------------";
+            cout << "\n\t-----------------";    // Afficher un séparateur
         cout << endl;
     }
 }
 
+/* Remplir la case choisie par le joueur avec son symbol*/
 bool Game::gridFill(char n, char playerChar)
 { // Remplir avec le caractère du joueur l'élément en position  n
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
         {
-            if ((grid[i][j] == n) && !((grid[i][j] == 'X') || (grid[i][j] == 'O')))
-            { // verifier si la position choisi est déja rempli
-                grid[i][j] = playerChar;
+            if ((grid[i][j] == n) && !((grid[i][j] == 'X') || (grid[i][j] == 'O'))) // verifier si la position choisi est libre et corresponde aux choix du joueur
+            { 
+                grid[i][j] = playerChar;        
                 return true;
             }
         }
@@ -61,28 +65,30 @@ bool Game::gridFill(char n, char playerChar)
     return false;
 }
 
+/* Jouer un tour */
 void Game::playTurn()
 {
     char choice = '1';
     bool reserve(false);
-    if (turn == 1)
+    
+    if (turn == 1)      // Afficher les menus en fonction du joueur qui joue
     {
         cout << endl
-             << "--------------------------------------------" << endl;
-        cout << "\tAu tour de " << playerOne << " de jouer (X)" << endl;
-        cout << "--------------------------------------------" << endl;
+             << "---------------------------------------------------------------" << endl;
+        cout << "\tAu tour de " << playerOne << " de jouer, ton symbole est le X (Croix)" << endl;
+        cout << "---------------------------------------------------------------" << endl;
         cout << "La Grille :" << endl;
         displayGrid();
         cout << endl
              << "Entrer votre choix : ";
 
-        while (!reserve)
+        while (!reserve)                        // Redemmander le choix jusqu'à ce qu'une réponse valide
         {
-            cin >> choice;
+            choice = manageInput();             // Valider les informations saisies
             
-            reserve = gridFill(choice, 'X');
+            reserve = gridFill(choice, 'X');    // remplir la girlle avec le symbol de l'utilisateur
             if (!reserve)
-                cout << "ERREUR,case reserver ; veuillez reesayer= ";
+                cout << "Case déjà reserver ! veuillez ressayer = ";
         }
         cout << endl
              << "RESULTAT :" << endl;
@@ -95,9 +101,9 @@ void Game::playTurn()
     else if (turn == 2)
     {
         cout << endl
-             << "--------------------------------------------" << endl;
-        cout << "\tAu tour de " << playerTwo << " de jouer (O)" << endl;
-        cout << "--------------------------------------------" << endl;
+             << "---------------------------------------------------------------" << endl;
+        cout << "\tAu tour de " << playerTwo << " de jouer, ton symbole est le O (Cercle)" << endl;
+        cout << "---------------------------------------------------------------" << endl;
         cout << "La Grille :" << endl;
         displayGrid();
         cout << endl
@@ -105,10 +111,10 @@ void Game::playTurn()
 
         while (!reserve)
         {
-            cin >> choice;
-            reserve = gridFill(choice, 'O');
+            choice = manageInput();                 // Valider les informations saisies
+            reserve = gridFill(choice, 'O');        // remplir la girlle avec le symbol de l'utilisateur
             if (!reserve)
-                cout << "ERREUR,case reserver ; veuillez ressayer= ";
+                cout << "Case déjà reserver ! veuillez ressayer = ";
         }
         cout << endl
              << "RESULTAT :" << endl;
@@ -122,9 +128,10 @@ void Game::playTurn()
         cout << "\nErreur dans la gestion des tours \n";
 }
 
+/* Vérifier si la grille est pleinne */
 bool Game::checkFull()
 {
-    int fill = 0; // count filled space
+    int fill = 0;                        // compter les espaces occupés
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
@@ -135,15 +142,16 @@ bool Game::checkFull()
             }
         }
     }
-    if (fill == 9)
+    if (fill == 9)                       // les 9 cases de la grille sont remplies
     {
-        gameOver = true;
+        gameOver = true;                 
         return true;
     }
     else
-        return false;
+        return false;                    // la grille est remplies
 }
 
+/* Vérifier si 3 symboles de joueur sont alignés */
 bool Game::check(char playerChar)
 {
     // verifier les ligne
@@ -155,7 +163,7 @@ bool Game::check(char playerChar)
             if (grid[i][j] == playerChar)
                 match++;
         }
-        if (match == 3)
+        if (match == 3)         // vérifier le nombre de symbole sur la même ligne
             return true;
     }
     // Verifier les colonnes
@@ -167,7 +175,7 @@ bool Game::check(char playerChar)
             if (grid[j][i] == playerChar)
                 match++;
         }
-        if (match == 3)
+        if (match == 3)         // vérifier le nombre de symbole sur la même colonne
             return true;
     }
 
@@ -183,7 +191,7 @@ bool Game::check(char playerChar)
     }
 
     if (match == 3)
-        return true;
+        return true;            // vérifier le nombre de symbole sur la la giagonal
 
     match = 0;
     for (int i = 0; i < 3; i++)
@@ -199,40 +207,42 @@ bool Game::check(char playerChar)
     return false;
 }
 
+/* Vérifier si un des joueurs a gagné */
 bool Game::chekWin()
 {
-    if (check('X') || check('O'))
+    if (check('X') || check('O'))   /* Vérifier si un des joueurs a gagné */
         return true;
     else
         return false;
 }
 
+/* Lancer le jeu */
 void Game::playGame()
 {
-    readme();
-    cout << "\nVeuiller entrer le nom du joueur 1 : ";
-    cin >> playerOne;
+    readme();               // afficher le readme
+    cout << "Veuiller entrer le nom du joueur 1 : ";
+    cin >> playerOne;       // récupérer le nom du joueur 1
     cout << "Veuiller entrer le nom du joueur 2 : ";
-    cin >> playerTwo;
+    cin >> playerTwo;       // récupérer le nom du joueur 2
 
-    while (!gameOver)
+    while (!gameOver)       // commuter les tours tant que le jeux est en cours
     {
 
-        if (chekWin())
+        if (chekWin())      // annoncer le gagnant si un des joueur gagne
         {
-            if (turn == 1)
+            if (turn == 1)  //    
             { 
                 char choice = 'N';
-                cout << "\nBravo!!" << playerTwo << " Vous avez gagné " << endl;
-                cout << "\nVoulez-vous recommencer à jouer (Y/N) ?" << endl;
+                cout << "\nBravo!!" << playerTwo << " Vous avez gagné " << endl;    // annoncer le résultat
+                cout << "\nVoulez-vous recommencer à jouer (Y/N) ?" << endl;        // demander si les joueurs veulent encore jouer
                 cin >> choice;
                 if (choice == 'Y'||choice == 'y')
                 {
-                    replayGame();
+                    replayGame();   // relancer le jeux
                 }
                 else
                 {
-                    endGame();
+                    endGame();      // terminer le jeu
                 }
             }
             else
@@ -243,43 +253,76 @@ void Game::playGame()
                 cin >> choice;
                 if (choice == 'Y')
                 {
-                    replayGame();
+                    replayGame();   // rejouer le jeu
                 }
                 else
                 {
-                    endGame();
+                    endGame();      // terminer le jeu
                 }
 
             }
             break;
         }
-        else if (checkFull())
+
+        else if (checkFull())       // la grille est remplies
         {
-            char ans = 'N';
+            char ans = 'N';         
             cout << "Toutes les cases sont remplies, recommencer (Y/N)?" << endl;
             cin >> ans;
             if (ans == 'N')
-                break;
+                endGame();          // terminer le jeu
+
+            else if(ans=='Y'||ans=='y')
+                replayGame();       // rejouer le jeu
+
+            else
+                cout << "Error : manage input grid full err" << endl;
         }
 
         else
-            playTurn();
+            playTurn();     // continuer le jeux tour par tour
     }
 }
 
+/* Rejuer le jeu */
 void Game::replayGame()
 {
-    gameOver = false;
-    turn = 1;   // reinitialiser le tour avec le joueur 1
-    gridInit(); // reinitialiser la grille
+    gameOver = false;       // le status du jeux est toujours en cours
+    turn = 1;               // reinitialiser le tour avec le joueur 1
+    gridInit();             // reinitialiser la grille
 }
 
+/* Gérer les données d'entrées de l'utilisateur*/
+bool Game::isValidChoice(string c)
+{
+    for(int i=0;i<9;i++)
+    {
+        if(c == validChoice[i])     // vérifier si le donnée d'entrée fait partie de la liste des données d'entrée valide
+            return true;
+    }
+    return false;
+}
+
+/* Controller les choix d'entrées de l'utilisateur */
+char Game::manageInput()
+{
+    string input;                   // stocker les informations saisie par l'utilisateur
+    cin >> input;                   // récupérer les valeurs
+    while(!isValidChoice(input)){   // demander de nouvel choix tant que les données ne sont pas valide
+        cout << "\nVeuiller choisir un nombre entre 1 et 9, Reéssayer ! = ";
+        cin >> input;
+    }
+    return input[0];                // renvoyer le charactère
+}
+
+/* Stoper le jeu */
 void Game::endGame()
 {
-    cout << "\nLe jeux est terminé" << endl;
-    gameOver = true;
+    cout << "\nLe jeux est terminé" << endl;    // alerter les joueurs de l'arrêt du jeu
+    gameOver = true;                            // game over
 }
-void Game::drawRow()
+
+void Game::drawRow()                            // afficher une ligne
 {
    for(int i(0); i<40;i++) { 
         cout << "___";
@@ -287,11 +330,19 @@ void Game::drawRow()
     cout << endl;
     cout<< endl;
 }
+
+/* Afficher un "lisez-moi" au début du jeux */
 void Game::readme()
 {
+    cout << endl;
     drawRow();
-    cout << "\t\t\t\t __________Welcome to TIC TAC TOE game!!________" << endl;
-    cout << "REGLE DU JEU:" << endl;
-    cout << "Deux joueurs posent tour à tour un rond pour l'un et une croix pour l'autre. Le but du jeux est d'obtenir un alignement en ligne, \ncolonne ou diagonale de ses 3 signes.Contrairement à la marelle les signes une fois posés ne sont plus déplacés." << endl;
+    cout << "\t\t\t\t __________Bienvenue dans le jeu TIC TAC TOE !!________" << endl << endl ;
+    cout << "\tOBJECTIF DU JEUX :" << endl;
+    cout << "\t\tPour gagner le jeu, vous devez aligner 3 symboles qui vous appartiennent sur une même ligne,"<<endl;
+    cout << "\t\tcolonne ou sur une diagonale, \"Faites le avant votre adversaire !\""<< endl;
+    cout << "\tREGLE DU JEU :" << endl;
+    cout << "\t\tDeux joueurs s'affronteront, à tour de rôle chaque joueur aura l'occasion de placer son symbole"<<endl;
+    cout << "\t\tAttention ! les choix valides sont les positions indiquées par un nombre compris entre [1] et [9]"<< endl;
+    
     drawRow();
 }
