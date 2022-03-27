@@ -3,7 +3,7 @@
 #include <iostream> // Inclusion du bibliothèque standard d'entrée et de sortie
 #include <string>   // Inclusion du bibliothèque des chaînes de caractère
 #include "Game.h"   // Inclusion des prototypes de la classe Game
-#include <string.h>
+#include <string.h> // Inclusion du bibliothèque string
 
 using namespace std; // Utiliser le nom standard du fonction
 
@@ -322,6 +322,7 @@ void Game::endGame()
     gameOver = true;                            // game over
 }
 
+/* Afficher  */
 void Game::drawRow()                            // afficher une ligne
 {
    for(int i(0); i<40;i++) { 
@@ -337,12 +338,24 @@ void Game::readme()
     cout << endl;
     drawRow();
     cout << "\t\t\t\t __________Bienvenue dans le jeu TIC TAC TOE !!________" << endl << endl ;
-    cout << "\tOBJECTIF DU JEUX :" << endl;
+    cout << "\tOBJECTIF DU JEU :" << endl;
     cout << "\t\tPour gagner le jeu, vous devez aligner 3 symboles qui vous appartiennent sur une même ligne,"<<endl;
     cout << "\t\tcolonne ou sur une diagonale, \"Faites le avant votre adversaire !\""<< endl;
-    cout << "\tREGLE DU JEU :" << endl;
+    cout << "\tRÈGLE DU JEU :" << endl;
     cout << "\t\tDeux joueurs s'affronteront, à tour de rôle chaque joueur aura l'occasion de placer son symbole"<<endl;
     cout << "\t\tAttention ! les choix valides sont les positions indiquées par un nombre compris entre [1] et [9]"<< endl;
     
     drawRow();
+}
+
+/* Destruction */
+
+Game::~Game(){
+    delete [] validChoice;
+    
+    for(int i=0;i<3;i++){
+        delete grid[i];
+    }
+    delete [] grid;
+    
 }
