@@ -351,11 +351,4 @@ void Game::readme()
 /* Destruction */
 
 Game::~Game(){
-    delete [] validChoice;
-    
-    for(int i=0;i<3;i++){
-        delete grid[i];
-    }
-    delete [] grid;
-    
 }
